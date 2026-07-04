@@ -1,0 +1,59 @@
+node_modules
+.next
+.env
+.env.local
+.env.*.local
+.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.tsbuildinfo
+.vercel
+
+# Uploaded resume (copied to public/cv.pdf)
+Eman_Iqbal_Resume_Portfolio*.pdf
+
+# Unused root-level screenshots & mockups
+about.png
+about1.png
+conta.png
+eman.png
+eman1.png
+eman (2).png
+hero.png
+hero (2).png
+heroSec.png
+ideal-hero.png
+myherosection.png
+CHAINLIT.png
+project123.png
+trusticon.png
+tulip.png
+badui.PNG
+Gemini_Generated_Image_*.png
+Screenshot *.png
+Screenshot (*.png
+
+# Unused root-level SVGs
+humanoid_robotics_book_architecture.svg
+todoflow_architecture_v2_jwt.svg
+
+# Unused 3D model copies in root
+astronaut (1).glb
+astronaut.usdz
+
+# Windows Zone Identifier files (downloaded file metadata)
+*:Zone.Identifier
+
+# Unused PNG fallbacks in public/projects (only .webp/.svg are used)
+public/projects/crm/screenshot.png
+public/projects/todoflow/screenshot.png
+public/projects/npm-packages/screenshot.png
+public/projects/furniture/screenshot.png
+public/projects/tulip/screenshot.png
+public/projects/chainlit/screenshot.png
+public/projects/blog/screenshot.png
+public/projects/humanoid-robotics/screenshot.png
+
+/lib/generated/prisma

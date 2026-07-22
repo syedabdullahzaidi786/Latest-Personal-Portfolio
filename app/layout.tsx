@@ -62,6 +62,22 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                window.addEventListener('DOMContentLoaded', function() {
+                  var splash = document.getElementById('init-splash');
+                  if (splash) splash.classList.add('hidden');
+                });
+                setTimeout(function() {
+                  var splash = document.getElementById('init-splash');
+                  if (splash) splash.classList.add('hidden');
+                }, 500);
+              }
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://vercel.live" />
       </head>
       <body className="antialiased">

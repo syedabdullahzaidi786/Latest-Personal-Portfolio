@@ -1,155 +1,175 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@/lib/generated/prisma/client';
-import type { PortfolioContent, PortfolioProject, PortfolioTechGroup } from '@/lib/portfolio-data';
-
-const globalForPrisma = globalThis as typeof globalThis & { prisma?: PrismaClient };
-
-function getPrismaClient() {
-  if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = new PrismaClient({} as any);
-  }
-
-  return globalForPrisma.prisma;
-}
+import { Pool } from '@neondatabase/serverless';
+import { getCurrentSession } from '@/lib/auth';
 
 const techColors = ['#7F77DD', '#1D9E75', '#378ADD', '#BA7517', '#D85A30', '#639922', '#D4537E', '#888780'];
+const accentColors = ['magenta', 'teal', 'purple'] as const;
 
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    if (error.message.includes('DATABASE_URL')) {
-      return error.message;
-    }
-    if (error.message.includes('fetch failed') || error.message.includes('ECONNREFUSED') || error.message.includes('ENOTFOUND')) {
-      return 'Unable to connect to Neon. Check DATABASE_URL and network access.';
-    }
-    return error.message;
-  }
-
-  return 'Unknown database error.';
-}
-
-function buildResponse(payload: PortfolioContent, source: 'database' | 'fallback', warning?: string, error?: string) {
-  return {
-    ...payload,
-    source,
-    ...(warning ? { warning } : {}),
-    ...(error ? { error } : {}),
-  };
-}
-
-function toProjectRecord(project: PortfolioProject, index: number) {
-  return {
-    id: project.id,
-    projectImage: project.screenshot,
-    title: project.title,
-    tags: project.tags,
-    description: project.what,
-    liveUrl: project.links?.demo ?? null,
-  };
-}
-
-function toTechGroupRecord(group: PortfolioTechGroup, index: number) {
-  return {
-    title: group.name,
-    stacks: group.techs,
-  };
-}
-
-function toPortfolioProject(project: { id: number; title: string; description: string | null; projectImage: string | null; liveUrl: string | null; tags: string[] }, index: number): PortfolioProject {
-  return {
-    id: project.id,
-    category: 'Fullstack',
-    icon: 'Sparkles',
-    title: project.title,
-    badge: '',
-    what: project.description ?? 'Project details will appear here.',
-    screenshot: project.projectImage ?? '/projects/default/screenshot.webp',
-    links: { demo: project.liveUrl ?? '#', github: '#' },
-    tags: project.tags ?? [],
-    accent: ['magenta', 'teal', 'purple'][index % 3] as PortfolioProject['accent'],
-  };
-}
-
-function toPortfolioTechGroup(group: { id: number; title: string; stacks: string[] }, index: number): PortfolioTechGroup {
-  return {
-    name: group.title,
-    color: techColors[index % techColors.length],
-    techs: group.stacks ?? [],
-  };
+function getPool() {
+  const connectionString = process.env.DATABASE_URL?.trim();
+  if (!connectionString) throw new Error('DATABASE_URL is not configured');
+  return new Pool({ connectionString });
 }
 
 export async function GET() {
+  const pool = getPool();
   try {
-    const prisma = getPrismaClient();
-    const [projects, techStack] = await Promise.all([
-      prisma.project.findMany({ orderBy: { id: 'asc' } }),
-      prisma.techStackGroup.findMany({ orderBy: { id: 'asc' } }),
+    const [projectsResult, techResult] = await Promise.all([
+      pool.query('SELECT id, "projectImage", title, tags, description, "liveUrl" FROM "Project" ORDER BY id ASC'),
+      pool.query('SELECT id, title, stacks FROM "TechStackGroup" ORDER BY id ASC'),
     ]);
 
-    const portfolioProjects = projects.length > 0
-      ? projects.map((project, index) => toPortfolioProject(project as any, index))
-      : [];
+    const projects = projectsResult.rows.map((p, i) => ({
+      id: p.id,
+      category: 'Fullstack',
+      icon: 'Sparkles',
+      title: p.title,
+      badge: '',
+      what: p.description ?? '',
+      screenshot: p.projectImage ?? '',
+      links: { demo: p.liveUrl ?? '#', github: '#' },
+      tags: Array.isArray(p.tags) ? p.tags : [],
+      accent: accentColors[i % accentColors.length],
+    }));
 
-    const portfolioTechStack = techStack.length > 0
-      ? techStack.map((group, index) => toPortfolioTechGroup(group as any, index))
-      : [];
+    const techStack = techResult.rows.map((g, i) => ({
+      id: g.id,
+      name: g.title,
+      color: techColors[i % techColors.length],
+      techs: Array.isArray(g.stacks) ? g.stacks : [],
+    }));
 
-    const warning = portfolioProjects.length === 0 && portfolioTechStack.length === 0
-      ? 'No database content available yet.'
-      : undefined;
-
-    return NextResponse.json(buildResponse({ projects: portfolioProjects, techStack: portfolioTechStack }, 'database', warning));
-  } catch (error) {
-    console.error('portfolio api error', error);
+    return NextResponse.json({ projects, techStack, source: 'database' });
+  } catch (error: any) {
+    console.error('[portfolio GET]', error);
     return NextResponse.json(
-      buildResponse({ projects: [], techStack: [] }, 'fallback', 'Database unavailable.', getErrorMessage(error)),
-      { status: 503 }
+      { projects: [], techStack: [], source: 'fallback', error: error?.message },
+      { status: 200 }
     );
+  } finally {
+    await pool.end();
   }
 }
 
 export async function POST(request: Request) {
+  const pool = getPool();
   try {
-    const auth = request.headers.get('authorization');
-    const expected = process.env.ADMIN_TOKEN;
-    if (!expected || auth !== `Bearer ${expected}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await getCurrentSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const body = await request.json();
+
+    if (body.type === 'project') {
+      const { title, description, projectImage, liveUrl, tags } = body;
+      if (!title?.trim()) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+
+      const tagsArray = Array.isArray(tags) ? tags : [];
+      const { rows } = await pool.query(
+        `INSERT INTO "Project" ("projectImage", title, tags, description, "liveUrl", "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) RETURNING *`,
+        [projectImage || null, title.trim(), tagsArray, description || null, liveUrl || null]
+      );
+      return NextResponse.json({ project: rows[0] }, { status: 201 });
     }
 
-    const prisma = getPrismaClient();
-    const body = (await request.json()) as Partial<PortfolioContent>;
-    const projects = Array.isArray(body?.projects) ? body.projects : [];
-    const techStack = Array.isArray(body?.techStack) ? body.techStack : [];
+    if (body.type === 'techStack') {
+      const { title, stacks } = body;
+      if (!title?.trim()) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
 
-    await prisma.$transaction(async (tx) => {
-      await tx.project.deleteMany();
-      await tx.techStackGroup.deleteMany();
+      const stacksArray = Array.isArray(stacks) ? stacks : [];
+      const { rows } = await pool.query(
+        `INSERT INTO "TechStackGroup" (title, stacks, "createdAt", "updatedAt")
+         VALUES ($1, $2, NOW(), NOW()) RETURNING *`,
+        [title.trim(), stacksArray]
+      );
+      return NextResponse.json({ group: rows[0] }, { status: 201 });
+    }
 
-      if (projects.length > 0) {
-        await tx.project.createMany({
-          data: projects.map((project) => ({
-            projectImage: project.screenshot ?? null,
-            title: project.title ?? 'Untitled project',
-            tags: project.tags ?? [],
-            description: project.what ?? null,
-            liveUrl: project.links?.demo ?? null,
-          })),
-        });
-      }
+    return NextResponse.json({ error: 'Invalid type. Use "project" or "techStack".' }, { status: 400 });
+  } catch (error: any) {
+    console.error('[portfolio POST]', error);
+    return NextResponse.json({ error: error?.message || 'Failed to create record' }, { status: 500 });
+  } finally {
+    await pool.end();
+  }
+}
 
-      if (techStack.length > 0) {
-        await tx.techStackGroup.createMany({
-          data: techStack.map((group) => ({
-            title: group.name ?? 'Untitled group',
-            stacks: group.techs ?? [],
-          })),
-        });
-      }
-    });
+export async function PUT(request: Request) {
+  const pool = getPool();
+  try {
+    const session = await getCurrentSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    return NextResponse.json({ ok: true, source: 'database' });
-  } catch (error) {
-    console.error('portfolio update error', error);
-    return NextResponse.json({ error: 'Failed to save content.', details: getErrorMessage(error) }, { status: 503 });
+    const body = await request.json();
+    const { type, id, title, description, projectImage, liveUrl, tags, stacks } = body;
+
+    if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+    if (!title?.trim()) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+
+    if (type === 'project') {
+      const tagsArray = Array.isArray(tags) ? tags : [];
+      const { rows } = await pool.query(
+        `UPDATE "Project"
+         SET "projectImage"=$1, title=$2, tags=$3, description=$4, "liveUrl"=$5, "updatedAt"=NOW()
+         WHERE id=$6 RETURNING *`,
+        [projectImage ?? null, title.trim(), tagsArray, description ?? null, liveUrl ?? null, Number(id)]
+      );
+      if (rows.length === 0) return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+      return NextResponse.json({ project: rows[0] });
+    }
+
+    if (type === 'techStack') {
+      const stacksArray = Array.isArray(stacks) ? stacks : [];
+      const { rows } = await pool.query(
+        `UPDATE "TechStackGroup"
+         SET title=$1, stacks=$2, "updatedAt"=NOW()
+         WHERE id=$3 RETURNING *`,
+        [title.trim(), stacksArray, Number(id)]
+      );
+      if (rows.length === 0) return NextResponse.json({ error: 'Tech group not found' }, { status: 404 });
+      return NextResponse.json({ group: rows[0] });
+    }
+
+    return NextResponse.json({ error: 'Invalid type. Use "project" or "techStack".' }, { status: 400 });
+  } catch (error: any) {
+    console.error('[portfolio PUT]', error);
+    return NextResponse.json({ error: error?.message || 'Failed to update record' }, { status: 500 });
+  } finally {
+    await pool.end();
+  }
+}
+
+export async function DELETE(request: Request) {
+  const pool = getPool();
+  try {
+    const session = await getCurrentSession();
+    if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type');
+    const id = searchParams.get('id');
+
+    if (!type || !id) {
+      return NextResponse.json({ error: 'type and id query params are required' }, { status: 400 });
+    }
+
+    if (type === 'project') {
+      const { rowCount } = await pool.query('DELETE FROM "Project" WHERE id=$1', [Number(id)]);
+      if (rowCount === 0) return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+      return NextResponse.json({ success: true });
+    }
+
+    if (type === 'techStack') {
+      const { rowCount } = await pool.query('DELETE FROM "TechStackGroup" WHERE id=$1', [Number(id)]);
+      if (rowCount === 0) return NextResponse.json({ error: 'Tech group not found' }, { status: 404 });
+      return NextResponse.json({ success: true });
+    }
+
+    return NextResponse.json({ error: 'Invalid type. Use "project" or "techStack".' }, { status: 400 });
+  } catch (error: any) {
+    console.error('[portfolio DELETE]', error);
+    return NextResponse.json({ error: error?.message || 'Failed to delete record' }, { status: 500 });
+  } finally {
+    await pool.end();
   }
 }

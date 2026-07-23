@@ -94,12 +94,12 @@ export function AboutSection() {
               </motion.div>
 
               <motion.div variants={itemVariants}>
-                <h2 className="section-title">SYED ABDULLAH ZAIDI</h2>
+                <h2 className="section-title">Syed Abdullah Zaidi</h2>
               </motion.div>
 
               <motion.div variants={itemVariants}>
                 <p className="text-lead sm:text-[1.125rem] text-[var(--text-primary)] font-medium">
-                  Full Stack Developer | Agentiic AI Developer | AI Enthusiast & Tech Innovator
+                  Full Stack Developer | Agentic AI Developer | AI Enthusiast &amp; Tech Innovator
                   <span className="text-[var(--text-body)] font-normal ml-2">— Karachi, Pakistan</span>
                 </p>
               </motion.div>

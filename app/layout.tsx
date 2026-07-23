@@ -11,27 +11,37 @@ const CustomCursor = dynamic(
 );
 
 /* ─── Site constants ─── */
-const siteUrl   = "https://syedabdullahzaidi.vercel.app";
-const siteName  = "Syed Abdullah Zaidi";
-const title     = "Syed Abdullah Zaidi — Agentic AI & Fullstack Developer";
-const description =
-  "Agentic AI Developer & Fullstack Engineer specializing in autonomous AI systems, multi-agent workflows, RAG pipelines, and production-ready fullstack applications built with Next.js, FastAPI, and TypeScript.";
+const siteUrl  = "https://latest-personal-portfolio-gamma.vercel.app";
+const name     = "Syed Abdullah Zaidi";
+const title    = "Syed Abdullah Zaidi | Agentic AI & Fullstack Developer — Portfolio";
+const desc     =
+  "Official Portfolio of Syed Abdullah Zaidi — Agentic AI Developer and Fullstack Engineer from Karachi, Pakistan. Expert in autonomous AI systems, multi-agent workflows, RAG pipelines, Next.js, FastAPI, and TypeScript. View projects, blogs, and achievements.";
+
 const keywords = [
+  // Name variations — most important for personal brand ranking
   "Syed Abdullah Zaidi",
+  "Syed Abdullah Zaidi Portfolio",
+  "Syed Abdullah Zaidi Developer",
+  "Syed Abdullah Zaidi AI",
+  "Abdullah Zaidi Developer",
+  "Abdullah Zaidi Portfolio",
+  // Role keywords
   "Agentic AI Developer",
-  "Fullstack Developer",
-  "AI Engineer",
-  "Next.js Developer",
-  "React Developer",
-  "TypeScript",
-  "FastAPI",
-  "RAG Pipeline",
-  "Multi-Agent AI",
-  "LLM",
-  "Portfolio",
-  "Pakistan Developer",
-  "Autonomous AI Systems",
-  "Full Stack Engineer",
+  "Fullstack Developer Pakistan",
+  "AI Engineer Karachi",
+  "Next.js Developer Pakistan",
+  "RAG Pipeline Developer",
+  "Multi-Agent AI Systems",
+  "LLM Developer",
+  "FastAPI Developer",
+  "React Developer Pakistan",
+  "TypeScript Developer",
+  // Discovery keywords
+  "Portfolio website",
+  "GIAIC Developer",
+  "FUUAST Developer",
+  "Karachi AI developer",
+  "Pakistan Fullstack developer",
 ];
 
 /* ─── Root metadata ─── */
@@ -40,121 +50,175 @@ export const metadata: Metadata = {
 
   title: {
     default: title,
-    template: `%s — ${siteName}`,
+    template: `%s | Syed Abdullah Zaidi`,
   },
-  description,
+  description: desc,
   keywords,
-  authors: [{ name: siteName, url: siteUrl }],
-  creator: siteName,
-  publisher: siteName,
+  authors:   [{ name, url: siteUrl }],
+  creator:   name,
+  publisher: name,
 
-  /* ── Canonical & alternates ── */
-  alternates: {
-    canonical: siteUrl,
-  },
+  alternates: { canonical: siteUrl },
 
-  /* ── Open Graph ── */
   openGraph: {
-    type: "website",
-    url: siteUrl,
-    siteName,
+    type:        "profile",
+    url:         siteUrl,
+    siteName:    name,
     title,
-    description,
-    locale: "en_US",
+    description: desc,
+    locale:      "en_US",
+    firstName:   "Syed Abdullah",
+    lastName:    "Zaidi",
+    username:    "syedabdullahzaidi786",
     images: [
       {
-        url: "/opengraph-image.png",
-        width: 1200,
+        url:    "/opengraph-image.png",
+        width:  1200,
         height: 630,
-        alt: `${siteName} — Agentic AI & Fullstack Developer`,
-        type: "image/png",
+        alt:    `${name} — Agentic AI & Fullstack Developer Portfolio`,
+        type:   "image/png",
       },
     ],
   },
 
-  /* ── Twitter / X ── */
   twitter: {
-    card: "summary_large_image",
+    card:        "summary_large_image",
     title,
-    description,
-    creator: "@syedabdullahzaidi",
-    images: ["/opengraph-image.png"],
+    description: desc,
+    creator:     "@syedabdullahzaidi",
+    images:      ["/opengraph-image.png"],
   },
 
-  /* ── Icons ── */
   icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-icon.png", type: "image/png" },
-    ],
+    icon:     [{ url: "/icon.png", type: "image/png" }],
+    apple:    [{ url: "/apple-icon.png", type: "image/png" }],
     shortcut: "/icon.png",
   },
 
-  /* ── Robots ── */
   robots: {
-    index: true,
+    index:  true,
     follow: true,
     googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      index:                true,
+      follow:               true,
+      "max-video-preview":  -1,
+      "max-image-preview":  "large",
+      "max-snippet":        -1,
     },
   },
 
-  /* ── Verification (add tokens when available) ── */
-  // verification: {
-  //   google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
-  // },
+  verification: { google: "google1b2ca50462ca8516" },
 
-  /* ── App info ── */
-  applicationName: siteName,
-  category: "technology",
+  applicationName: `${name} Portfolio`,
+  category:        "technology",
 };
 
-/* ─── Viewport (separate export per Next.js 14) ─── */
 export const viewport: Viewport = {
-  themeColor: "#000000",
-  width: "device-width",
+  themeColor:   "#000000",
+  width:        "device-width",
   initialScale: 1,
   maximumScale: 5,
 };
 
-/* ─── JSON-LD structured data ─── */
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: siteName,
-  url: siteUrl,
-  image: `${siteUrl}/opengraph-image.png`,
-  sameAs: [
-    "https://github.com/syedabdullahzaidi786",
-    "https://linkedin.com/in/syed-abdullah-zaidi-4954a7395",
-  ],
-  jobTitle: "Agentic AI Developer & Fullstack Engineer",
-  description,
-  knowsAbout: [
-    "Agentic AI",
-    "Multi-Agent Systems",
-    "RAG Pipelines",
-    "Next.js",
-    "React",
-    "TypeScript",
-    "FastAPI",
-    "Python",
-    "PostgreSQL",
-    "Fullstack Development",
-  ],
-  worksFor: {
-    "@type": "Organization",
-    name: "Freelance / Independent",
+/* ─── JSON-LD: Person + WebSite (two schemas, both needed) ─── */
+const jsonLd = [
+  /* 1. Person schema — what Google uses for knowledge panel */
+  {
+    "@context":   "https://schema.org",
+    "@type":      "Person",
+    "@id":        `${siteUrl}/#person`,
+    name,
+    givenName:    "Syed Abdullah",
+    familyName:   "Zaidi",
+    alternateName: ["Abdullah Zaidi", "Syed Abdullah"],
+    url:          siteUrl,
+    image: {
+      "@type":    "ImageObject",
+      url:        `${siteUrl}/opengraph-image.png`,
+      width:      1200,
+      height:     630,
+    },
+    sameAs: [
+      "https://github.com/syedabdullahzaidi786",
+      "https://linkedin.com/in/syed-abdullah-zaidi-4954a7395",
+      "https://syedabdullahzaidi.vercel.app",
+    ],
+    jobTitle:  "Agentic AI Developer & Fullstack Engineer",
+    worksFor: {
+      "@type": "Organization",
+      name:    "Freelance",
+    },
+    address: {
+      "@type":            "PostalAddress",
+      addressLocality:    "Karachi",
+      addressCountry:     "PK",
+    },
+    email:       "syedabdullahzaidi786@gmail.com",
+    description: desc,
+    knowsAbout: [
+      "Agentic AI",
+      "Multi-Agent Systems",
+      "RAG Pipelines",
+      "Next.js",
+      "React",
+      "TypeScript",
+      "FastAPI",
+      "Python",
+      "PostgreSQL",
+      "Fullstack Development",
+      "LLM",
+      "OpenAI",
+      "Docker",
+    ],
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name:    "FUUAST",
+    },
+    hasCredential: {
+      "@type":       "EducationalOccupationalCredential",
+      name:          "GIAIC Certification",
+      credentialCategory: "Certificate",
+      recognizedBy: {
+        "@type": "Organization",
+        name:    "Governor's Initiative for AI & Computing",
+      },
+    },
   },
-};
 
-/* ─── Critical inline CSS (prevents FOUC before JS hydrates) ─── */
+  /* 2. WebSite schema — enables Google sitelinks search box */
+  {
+    "@context":  "https://schema.org",
+    "@type":     "WebSite",
+    "@id":       `${siteUrl}/#website`,
+    url:         siteUrl,
+    name:        `${name} — Portfolio`,
+    description: desc,
+    author: { "@id": `${siteUrl}/#person` },
+    inLanguage:  "en-US",
+    potentialAction: {
+      "@type":       "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteUrl}/blogs?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  },
+
+  /* 3. ProfilePage schema — newer Google signal for personal sites */
+  {
+    "@context":  "https://schema.org",
+    "@type":     "ProfilePage",
+    "@id":       `${siteUrl}/#profilepage`,
+    url:         siteUrl,
+    name:        `${name} — Official Portfolio`,
+    dateCreated: "2024-01-01",
+    dateModified: new Date().toISOString().split("T")[0],
+    mainEntity:  { "@id": `${siteUrl}/#person` },
+  },
+];
+
+/* ─── Critical inline CSS ─── */
 const criticalCSS = `
 body { background: #000; color: #fff; margin: 0; }
 #init-splash {
@@ -178,32 +242,20 @@ export default function RootLayout({
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
 
-        {/* JSON-LD structured data */}
+        {/* Combined JSON-LD array — 3 schemas in one script tag */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
 
-        {/* Splash hide script */}
+        {/* Splash hide */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              if (typeof window !== 'undefined') {
-                window.addEventListener('DOMContentLoaded', function() {
-                  var s = document.getElementById('init-splash');
-                  if (s) s.classList.add('hidden');
-                });
-                setTimeout(function() {
-                  var s = document.getElementById('init-splash');
-                  if (s) s.classList.add('hidden');
-                }, 500);
-              }
-            `,
+            __html: `if(typeof window!=='undefined'){window.addEventListener('DOMContentLoaded',function(){var s=document.getElementById('init-splash');if(s)s.classList.add('hidden')});setTimeout(function(){var s=document.getElementById('init-splash');if(s)s.classList.add('hidden')},500)}`,
           }}
         />
 
-        {/* DNS prefetch */}
-        <link rel="preconnect" href="https://vercel.live" />
+        <link rel="preconnect"  href="https://vercel.live" />
         <link rel="dns-prefetch" href="https://vercel.live" />
       </head>
       <body className="antialiased">
@@ -211,8 +263,8 @@ export default function RootLayout({
           <h1>SYED ABDULLAH ZAIDI</h1>
         </div>
         <div className="grain-overlay" aria-hidden="true" />
-        <div className="vignette" aria-hidden="true" />
-        <div className="atmos-glow" aria-hidden="true" />
+        <div className="vignette"      aria-hidden="true" />
+        <div className="atmos-glow"    aria-hidden="true" />
         <ScrollProgress />
         {children}
         <CustomCursor />

@@ -143,7 +143,9 @@ export function HeroSection() {
               <p className="text-base sm:text-lg text-[var(--text-muted)] font-medium tracking-wide">
                 Hi, I&apos;m
               </p>
+              {/* h1 with full legal name — primary on-page SEO signal for name search */}
               <h1 className="text-[clamp(2rem,6vw,5rem)] font-extrabold text-white leading-[1.05] tracking-[-0.04em]">
+                <span className="sr-only">Syed Abdullah Zaidi — </span>
                 SYED ABDULLAH ZAIDI
               </h1>
             </motion.div>
@@ -169,6 +171,13 @@ export function HeroSection() {
             >
               Building <span className="text-accent font-semibold">autonomous AI systems</span> and scalable web applications from agent workflows to fullstack applications.
             </motion.p>
+
+            {/* SEO: screen-reader accessible name description, visually hidden */}
+            <p className="sr-only">
+              Syed Abdullah Zaidi is an Agentic AI Developer and Fullstack Engineer based in Karachi, Pakistan.
+              Specializing in autonomous AI systems, multi-agent workflows, RAG pipelines, Next.js, FastAPI, and TypeScript.
+              GIAIC certified developer. View the official portfolio of Syed Abdullah Zaidi.
+            </p>
 
             {/* Tech pills */}
             <motion.div

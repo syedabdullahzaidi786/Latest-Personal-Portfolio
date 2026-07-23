@@ -274,7 +274,7 @@ export function AchievementsSection() {
             animate={headerInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.35, delay: 0.14 }}
           >
-            Certifications, awards, hackathon wins, and milestones I've earned along the way.
+            Certifications, awards, hackathon wins, and milestones I&apos;ve earned along the way.
           </motion.p>
 
           {/* stats row */}

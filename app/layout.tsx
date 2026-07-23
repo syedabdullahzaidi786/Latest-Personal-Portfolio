@@ -1,43 +1,160 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import dynamic from "next/dynamic";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
-const CustomCursor = dynamic(() => import("@/components/ui/CustomCursor").then((m) => ({ default: m.CustomCursor })), { ssr: false });
+const CustomCursor = dynamic(
+  () => import("@/components/ui/CustomCursor").then((m) => ({ default: m.CustomCursor })),
+  { ssr: false }
+);
 
-const siteUrl = 'https://syedabdullahzaidi.vercel.app';
+/* ─── Site constants ─── */
+const siteUrl   = "https://syedabdullahzaidi.vercel.app";
+const siteName  = "Syed Abdullah Zaidi";
+const title     = "Syed Abdullah Zaidi — Agentic AI & Fullstack Developer";
+const description =
+  "Agentic AI Developer & Fullstack Engineer specializing in autonomous AI systems, multi-agent workflows, RAG pipelines, and production-ready fullstack applications built with Next.js, FastAPI, and TypeScript.";
+const keywords = [
+  "Syed Abdullah Zaidi",
+  "Agentic AI Developer",
+  "Fullstack Developer",
+  "AI Engineer",
+  "Next.js Developer",
+  "React Developer",
+  "TypeScript",
+  "FastAPI",
+  "RAG Pipeline",
+  "Multi-Agent AI",
+  "LLM",
+  "Portfolio",
+  "Pakistan Developer",
+  "Autonomous AI Systems",
+  "Full Stack Engineer",
+];
 
+/* ─── Root metadata ─── */
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Syed Abdullah Zaidi — Agentic AI & Fullstack Developer",
-  description: "Agentic AI Developer & Fullstack Engineer. Building autonomous AI systems and scalable web applications — multi-agent workflows, RAG pipelines, and production-ready fullstack apps.",
-  keywords: ["Agentic AI", "Fullstack Developer", "AI Engineer", "Next.js", "React", "TypeScript", "FastAPI", "RAG", "Portfolio"],
-  authors: [{ name: "Syed Abdullah Zaidi", url: siteUrl }],
-  creator: "Syed Abdullah Zaidi",
-  openGraph: {
-    title: "Syed Abdullah Zaidi — Agentic AI & Fullstack Developer",
-    description: "Building autonomous AI systems and scalable web applications.",
-    url: siteUrl,
-    siteName: "Syed Abdullah Zaidi",
-    locale: "en_US",
-    type: "website",
+
+  title: {
+    default: title,
+    template: `%s — ${siteName}`,
   },
+  description,
+  keywords,
+  authors: [{ name: siteName, url: siteUrl }],
+  creator: siteName,
+  publisher: siteName,
+
+  /* ── Canonical & alternates ── */
+  alternates: {
+    canonical: siteUrl,
+  },
+
+  /* ── Open Graph ── */
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName,
+    title,
+    description,
+    locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: `${siteName} — Agentic AI & Fullstack Developer`,
+        type: "image/png",
+      },
+    ],
+  },
+
+  /* ── Twitter / X ── */
   twitter: {
     card: "summary_large_image",
-    title: "Syed Abdullah Zaidi — Agentic AI & Fullstack Developer",
-    description: "Building autonomous AI systems and scalable web applications.",
+    title,
+    description,
+    creator: "@syedabdullahzaidi",
+    images: ["/opengraph-image.png"],
   },
-  robots: { index: true, follow: true },
+
+  /* ── Icons ── */
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", type: "image/png" },
+    ],
+    shortcut: "/icon.png",
+  },
+
+  /* ── Robots ── */
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  /* ── Verification (add tokens when available) ── */
+  // verification: {
+  //   google: "GOOGLE_SEARCH_CONSOLE_TOKEN",
+  // },
+
+  /* ── App info ── */
+  applicationName: siteName,
+  category: "technology",
 };
 
-export const viewport = {
-  themeColor: '#000000',
-  width: 'device-width',
+/* ─── Viewport (separate export per Next.js 14) ─── */
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
 };
 
+/* ─── JSON-LD structured data ─── */
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteName,
+  url: siteUrl,
+  image: `${siteUrl}/opengraph-image.png`,
+  sameAs: [
+    "https://github.com/syedabdullahzaidi786",
+    "https://linkedin.com/in/syed-abdullah-zaidi-4954a7395",
+  ],
+  jobTitle: "Agentic AI Developer & Fullstack Engineer",
+  description,
+  knowsAbout: [
+    "Agentic AI",
+    "Multi-Agent Systems",
+    "RAG Pipelines",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "FastAPI",
+    "Python",
+    "PostgreSQL",
+    "Fullstack Development",
+  ],
+  worksFor: {
+    "@type": "Organization",
+    name: "Freelance / Independent",
+  },
+};
+
+/* ─── Critical inline CSS (prevents FOUC before JS hydrates) ─── */
 const criticalCSS = `
 body { background: #000; color: #fff; margin: 0; }
 #init-splash {
@@ -55,38 +172,47 @@ body { background: #000; color: #fff; margin: 0; }
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <head>
         <style dangerouslySetInnerHTML={{ __html: criticalCSS }} />
+
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+
+        {/* Splash hide script */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               if (typeof window !== 'undefined') {
                 window.addEventListener('DOMContentLoaded', function() {
-                  var splash = document.getElementById('init-splash');
-                  if (splash) splash.classList.add('hidden');
+                  var s = document.getElementById('init-splash');
+                  if (s) s.classList.add('hidden');
                 });
                 setTimeout(function() {
-                  var splash = document.getElementById('init-splash');
-                  if (splash) splash.classList.add('hidden');
+                  var s = document.getElementById('init-splash');
+                  if (s) s.classList.add('hidden');
                 }, 500);
               }
             `,
           }}
         />
+
+        {/* DNS prefetch */}
         <link rel="preconnect" href="https://vercel.live" />
+        <link rel="dns-prefetch" href="https://vercel.live" />
       </head>
       <body className="antialiased">
-        <div id="init-splash">
+        <div id="init-splash" aria-hidden="true">
           <h1>SYED ABDULLAH ZAIDI</h1>
         </div>
-        <div className="grain-overlay" />
-        <div className="vignette" />
-        <div className="atmos-glow" />
+        <div className="grain-overlay" aria-hidden="true" />
+        <div className="vignette" aria-hidden="true" />
+        <div className="atmos-glow" aria-hidden="true" />
         <ScrollProgress />
         {children}
         <CustomCursor />

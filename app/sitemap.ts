@@ -1,20 +1,19 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://syedabdullahzaidi.vercel.app";
+const siteUrl = "https://latest-personal-portfolio-gamma.vercel.app";
+const lastMod = new Date().toISOString();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    /* Homepage — highest priority, Google's main entry point for name search */
     {
       url:             siteUrl,
-      lastModified:    new Date(),
+      lastModified:    lastMod,
       changeFrequency: "weekly",
       priority:        1.0,
     },
-    /* Blogs page — separate crawlable URL */
     {
       url:             `${siteUrl}/blogs`,
-      lastModified:    new Date(),
+      lastModified:    lastMod,
       changeFrequency: "weekly",
       priority:        0.8,
     },

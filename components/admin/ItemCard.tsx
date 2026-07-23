@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Edit2, Trash2, ExternalLink } from 'lucide-react';
 
 type AccentColor = 'blue' | 'purple' | 'amber' | 'emerald' | 'rose';
@@ -42,9 +43,12 @@ export default function ItemCard({
       {/* Image / Placeholder */}
       {image ? (
         <div className="h-44 overflow-hidden rounded-t-2xl bg-[#141923] shrink-0">
-          <img
+          <Image
             src={image}
             alt={title}
+            width={600}
+            height={176}
+            unoptimized
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </div>

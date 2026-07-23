@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X } from 'lucide-react';
+import Link from 'next/link';
 import { navItems } from '@/lib/data';
 
 export function Navbar() {
@@ -128,26 +129,36 @@ export function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-0.5 relative z-10">
-              {navItems.map((item) => (
-                <button
-                  key={item.href}
-                  onClick={() => scrollTo(item.href)}
-                  className={`relative px-3 xl:px-4 py-3 text-xs font-bold tracking-wider uppercase rounded-lg transition-all duration-300 ${
-                    activeSection === item.href
-                      ? 'text-white'
-                      : 'text-[var(--text-body)] hover:text-white/80'
-                  }`}
-                >
-                  <span className="relative z-10">{item.label}</span>
-                  {activeSection === item.href && (
-                    <motion.span
-                      layoutId="nav-active"
-                      className="absolute bottom-[3px] left-2.5 right-2.5 h-0.5 rounded-full bg-accent"
-                      transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    />
-                  )}
-                </button>
-              ))}
+              {navItems.map((item) =>
+                item.external ? (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="relative px-3 xl:px-4 py-3 text-xs font-bold tracking-wider uppercase rounded-lg transition-all duration-300 text-[var(--text-body)] hover:text-white/80"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <button
+                    key={item.href}
+                    onClick={() => scrollTo(item.href)}
+                    className={`relative px-3 xl:px-4 py-3 text-xs font-bold tracking-wider uppercase rounded-lg transition-all duration-300 ${
+                      activeSection === item.href
+                        ? 'text-white'
+                        : 'text-[var(--text-body)] hover:text-white/80'
+                    }`}
+                  >
+                    <span className="relative z-10">{item.label}</span>
+                    {activeSection === item.href && (
+                      <motion.span
+                        layoutId="nav-active"
+                        className="absolute bottom-[3px] left-2.5 right-2.5 h-0.5 rounded-full bg-accent"
+                        transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      />
+                    )}
+                  </button>
+                )
+              )}
             </div>
 
             <div className="hidden md:flex items-center relative z-10">
@@ -213,22 +224,33 @@ export function Navbar() {
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-                {navItems.map((item, i) => (
-                  <motion.button
-                    key={item.href}
-                    onClick={() => scrollTo(item.href)}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.04 * i, duration: 0.25 }}
-                    className={`text-left px-4 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all ${
-                      activeSection === item.href
-                        ? 'text-white bg-white/10'
-                        : 'text-[var(--text-body)] hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
+                {navItems.map((item, i) =>
+                  item.external ? (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="text-left px-4 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all text-[var(--text-body)] hover:text-white hover:bg-white/5"
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <motion.button
+                      key={item.href}
+                      onClick={() => scrollTo(item.href)}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.04 * i, duration: 0.25 }}
+                      className={`text-left px-4 py-4 rounded-xl text-sm font-bold tracking-wider uppercase transition-all ${
+                        activeSection === item.href
+                          ? 'text-white bg-white/10'
+                          : 'text-[var(--text-body)] hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      {item.label}
+                    </motion.button>
+                  )
+                )}
                 <div className="pt-3 mt-2 border-t border-white/5">
                   <motion.button
                     onClick={() => scrollTo('#contact')}

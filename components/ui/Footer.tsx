@@ -59,16 +59,26 @@ export function Footer() {
           <div className="space-y-4 md:pl-2">
             <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40">Navigation</p>
             <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-              {navItems.map((item) => (
-                <motion.button
-                  key={item.href}
-                  onClick={() => scrollTo(item.href)}
-                  whileTap={{ scale: 0.97 }}
-                  className="text-left text-sm text-white/60 hover:text-accent transition-colors duration-200 hover:translate-x-0.5"
-                >
-                  {item.label}
-                </motion.button>
-              ))}
+              {navItems.map((item) =>
+                item.external ? (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="text-left text-sm text-white/60 hover:text-accent transition-colors duration-200"
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <motion.button
+                    key={item.href}
+                    onClick={() => scrollTo(item.href)}
+                    whileTap={{ scale: 0.97 }}
+                    className="text-left text-sm text-white/60 hover:text-accent transition-colors duration-200 hover:translate-x-0.5"
+                  >
+                    {item.label}
+                  </motion.button>
+                )
+              )}
             </div>
           </div>
 

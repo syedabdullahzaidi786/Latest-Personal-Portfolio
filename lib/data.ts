@@ -11,5 +11,7 @@ export const navItems = [
   { label: "About", href: "#about" },
   { label: "Work", href: "#work" },
   { label: "Tech Stack", href: "#tech-stack" },
+  { label: "Achievements", href: "#achievements" },
+  { label: "Blogs", href: "/blogs", external: true },
   { label: "Contact", href: "#contact" },
 ];

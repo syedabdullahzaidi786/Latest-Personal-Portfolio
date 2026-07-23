@@ -9,6 +9,7 @@ const HeroSection = dynamic(() => import('@/components/hero/HeroSection').then(m
 const AboutSection = dynamic(() => import('@/components/about/AboutSection').then(m => ({ default: m.AboutSection })));
 const WorkSection = dynamic(() => import('@/components/work/WorkSection').then(m => ({ default: m.WorkSection })));
 const TechStackSection = dynamic(() => import('@/components/tech-stack/TechStackSection').then(m => ({ default: m.TechStackSection })));
+const AchievementsSection = dynamic(() => import('@/components/achievements/AchievementsSection').then(m => ({ default: m.AchievementsSection })));
 const ContactSection = dynamic(() => import('@/components/contact/ContactSection').then(m => ({ default: m.ContactSection })));
 
 export default function Home() {
@@ -26,6 +27,8 @@ export default function Home() {
         <WorkSection />
 
         <TechStackSection />
+
+        <AchievementsSection />
 
         <ContactSection />
 

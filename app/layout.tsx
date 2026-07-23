@@ -107,7 +107,7 @@ export const metadata: Metadata = {
     },
   },
 
-  verification: { google: "google1b2ca50462ca8516" },
+  verification: { google: "WiJccQAtmgGQp5Kx2BaMP5zIfOFu43hkrOPrjQCfH9Q" },
 
   applicationName: `${name} Portfolio`,
   category:        "technology",

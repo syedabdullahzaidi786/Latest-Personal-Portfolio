@@ -8,6 +8,7 @@ import EmptyState from '@/components/admin/EmptyState';
 import FormModal from '@/components/admin/FormModal';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import FormField, { inputClass, textareaClass } from '@/components/admin/FormField';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface Achievement {
   id: number;
@@ -161,9 +162,12 @@ export default function AchievementsPage() {
           <textarea rows={3} value={form.description} onChange={e => setField('description', e.target.value)}
             placeholder="Brief description of this achievement..." className={textareaClass} />
         </FormField>
-        <FormField label="Image URL" hint="Certificate or badge image URL">
-          <input type="text" value={form.image} onChange={e => setField('image', e.target.value)}
-            placeholder="https://example.com/certificate.png" className={inputClass} />
+        <FormField label="Image" hint="Upload certificate or badge image (max 2MB)">
+          <ImageUpload
+            value={form.image}
+            onChange={(url) => setField('image', url)}
+            onError={(msg) => showToast('error', msg)}
+          />
         </FormField>
         <FormField label="Link URL" hint="Link to certificate or proof">
           <input type="url" value={form.url} onChange={e => setField('url', e.target.value)}

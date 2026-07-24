@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, Github, Sparkles, ArrowUpRight, Bot, Code } from 'lucide-react';
 import { blurPlaceholders } from '@/lib/blur-placeholders';
@@ -22,33 +23,45 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
     >
       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-accent/50 via-accent/25 to-accent/5 transition-all duration-500 ease-out group-hover:w-[4px] group-hover:from-accent group-hover:via-accent/50 group-hover:to-accent/10 group-hover:shadow-[2px_0_12px_rgba(59,130,246,0.15)]" />
 
-      <div className="relative h-[180px] sm:h-[200px] overflow-hidden bg-surface-base flex-shrink-0">
-        {project.screenshot ? (
-          <>
-            <Image
-              src={project.screenshot}
-              alt={project.title}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              placeholder={isSvg ? 'empty' : 'blur'}
-              blurDataURL={blurUrl}
-              priority={index < 3}
-              className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-overlay" />
-          </>
-        ) : (
-          <div className="w-full h-full bg-accent-subtle flex items-center justify-center">
-            <Bot className="w-8 h-8 text-accent/30" />
+      {/* Clickable image area → detail page */}
+      <Link href={`/projects/${project.id}`} className="block relative">
+        <div className="relative h-[240px] sm:h-[280px] overflow-hidden bg-surface-base flex-shrink-0">
+          {project.screenshot ? (
+            <>
+              <Image
+                src={project.screenshot}
+                alt={project.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                placeholder={isSvg ? 'empty' : 'blur'}
+                blurDataURL={blurUrl}
+                priority={index < 3}
+                className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-overlay" />
+            </>
+          ) : (
+            <div className="w-full h-full bg-accent-subtle flex items-center justify-center">
+              <Bot className="w-8 h-8 text-accent/30" />
+            </div>
+          )}
+          {/* View details overlay on hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-white"
+              style={{ background: 'rgba(59,130,246,0.85)', backdropFilter: 'blur(8px)' }}>
+              View Details <ArrowUpRight className="w-3.5 h-3.5" />
+            </span>
           </div>
-        )}
-      </div>
+        </div>
+      </Link>
 
       <div className="relative z-10 p-5 sm:p-6 flex flex-col flex-1 gap-3">
         <div>
-          <h3 className="text-[16px] font-bold text-white leading-snug">
-            {project.title}
-          </h3>
+          <Link href={`/projects/${project.id}`} className="group/title">
+            <h3 className="text-[16px] font-bold text-white leading-snug group-hover/title:text-accent transition-colors duration-200">
+              {project.title}
+            </h3>
+          </Link>
           {project.badge && (
             <span className="text-[11px] text-[var(--text-muted)] tracking-wide bg-white/[0.04] px-2 py-0.5 rounded-full">{project.badge}</span>
           )}
@@ -70,6 +83,14 @@ function ProjectCard({ project, index }: { project: PortfolioProject; index: num
         </div>
 
         <div className="flex flex-wrap gap-2 pt-1">
+          {/* View Details slug link */}
+          <Link
+            href={`/projects/${project.id}`}
+            className="inline-flex items-center gap-1.5 px-4 py-3 text-xs font-semibold rounded-lg border border-white/[0.1] text-[var(--text-body)] hover:text-white hover:border-accent/50 hover:bg-accent/[0.06] hover:-translate-y-0.5 transition-all duration-300 min-h-[44px]"
+          >
+            <ArrowUpRight className="w-3 h-3" />
+            View Details
+          </Link>
           {project.links.demo && project.links.demo !== '#' && (
             <a
               href={project.links.demo}

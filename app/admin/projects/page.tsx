@@ -8,6 +8,7 @@ import EmptyState from '@/components/admin/EmptyState';
 import FormModal from '@/components/admin/FormModal';
 import ConfirmDialog from '@/components/admin/ConfirmDialog';
 import FormField, { inputClass, textareaClass } from '@/components/admin/FormField';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface Project {
   id: number;
@@ -206,13 +207,11 @@ export default function ProjectsPage() {
             className={textareaClass}
           />
         </FormField>
-        <FormField label="Screenshot / Image URL" hint="Paste an absolute URL or a /public path">
-          <input
-            type="text"
+        <FormField label="Screenshot / Image" hint="Upload project screenshot or demo image (max 2MB)">
+          <ImageUpload
             value={form.projectImage}
-            onChange={e => setField('projectImage', e.target.value)}
-            placeholder="https://example.com/screenshot.png"
-            className={inputClass}
+            onChange={(url) => setField('projectImage', url)}
+            onError={(msg) => showToast('error', msg)}
           />
         </FormField>
         <FormField label="Live URL">
